@@ -1,47 +1,50 @@
+#include <string>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
-int main(){
-  //XML FILE STORED IN TXT FORMAT STORED IN STRING                                                                                                                                                  
+bool contains_digits_colon_period(const std::string &str) {
+    return str.find_first_not_of("0123456789:.") == std::string::npos;
+  }
+bool all_digits(const std::string &str){
+    return str.find_first_not_of("0123456789") == std::string::npos;
+}
 
-  string xml_data;
-  string xml_file_name;
-  cout<<"Enter xml file name"<<endl;
-  cin>>xml_file_name;
-
-  ifstream xmlFile (xml_file_name);
-  string  content( (std::istreambuf_iterator<char>(xmlFile) ),
-                   (std::istreambuf_iterator<char>()    ) );
-
-  //PARSING THRESHOLD VALUES USING TAGS AS DELIMITERS                                                                                                                                               
-  string delimiter1 = "<threshold>";
-  string delimiter2 = "</threshold>";
+int main()
+{
+  ifstream infile("file1.txt");
+  string line;
+  vector<string> token_vec;
+  string delimiter1 = " ";
+  string delimiter2 = ":";
+ 
   size_t pos = 0;
-  size_t pos1 = 0;
-  size_t pos2 = 0;
-  vector<double> threshold_list;
-  string token;
-
-  while ((pos = content.find(delimiter1)) != std::string::npos) {
-       pos1 = content.find(delimiter1);
-       pos2 = content.find(delimiter2);
-       size_t length = pos2-pos1;
-       token = content.substr(pos1 + delimiter1.length(), length - delimiter1.length());
-       content.erase(0, pos2 + delimiter2.length());
-       threshold_list.push_back(atof(token.c_str()));
+  size_t token_pos = 0;
+  for( std::string line; getline( infile, line ); )
+  {
+    while ((pos = line.find(delimiter1)) != std::string::npos) 
+    {
+      string token = line.substr(0, pos);
+      if((contains_digits_colon_period(token)) && !(all_digits(token)) )
+      {
+        token_vec.push_back(token);
+        cout << token << endl;
+      }
+      line.erase(0, pos + delimiter1.length());
+    }
+    cout<<"printing token values"<<endl;
+    size_t count = 0;
+    for(string token : token_vec){
+        token_pos = token.find(delimiter2);
+        token.erase(0, token_pos + delimiter2.length());
+        cout<<token<<endl;
+        token_vec[count]=token;
+        count+=1;
+    }
+    break;
   }
-
-  sort(threshold_list.begin(), threshold_list.end());
-  cout<<"Sorted List of Threshold Values"<<endl;
-
-  for (int i = 0; i<threshold_list.size(); i++) {
-    cout<<threshold_list[i]<<" ";
-  }
-
-  xmlFile.close();
   return 0;
 }
