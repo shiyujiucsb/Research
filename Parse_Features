@@ -5,30 +5,35 @@
 
 using namespace std;
 
+bool contains_digits_colon_period(const std::string &str) {
+    return str.find_first_not_of("0123456789:.") == std::string::npos;
+  }
+bool all_digits(const std::string &str){
+    return str.find_first_not_of("0123456789") == std::string::npos;
+}
+
 int main()
 {
   ifstream infile("file1.txt");
   string line;
   string tokens[10000];
   string delimiter1 = " ";
-  int i = 0;
+ 
+ 
   int counter = 0;
   size_t pos = 0;
   for( std::string line; getline( infile, line ); )
   {
     while ((pos = line.find(delimiter1)) != std::string::npos) {
-    string token = line.substr(0, pos);
-    tokens[counter] = token;
-    cout << token << endl;
-    line.erase(0, pos + delimiter1.length());
-    counter+=1;
+      string token = line.substr(0, pos);
+      if((contains_digits_colon_period(token)) && !(all_digits(token)) ){
+        tokens[counter] = token;
+        cout << token << endl;
+        counter+=1;
+      }
+      line.erase(0, pos + delimiter1.length());
     }
     
-    for(int i = 0; i<17;i++)
-    {
-    cout<<tokens[i]<<endl;
-    }
-    break;
   }
   return 0;
 }
