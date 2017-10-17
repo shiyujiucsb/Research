@@ -45,7 +45,8 @@ int main()
   cout<<"Enter xml file name"<<endl;
   cin>>xml_file_name;
 
-  ifstream xmlFile (xml_file_name);
+  //ifstream xmlFile (xml_file_name);
+  ifstream xmlFile (file3.txt);
   string  file_content( (std::istreambuf_iterator<char>(xmlFile) ),
                    (std::istreambuf_iterator<char>()    ) );
   vector<double> sorted_threshold_list = parse_threshold(file_content);
@@ -55,6 +56,17 @@ int main()
     cout<<sorted_threshold_list[i]<<" ";
   }cout<<endl;
   
+  //encode thresholds 
+  vector<int> encoded_threshold_list;
+  for(int i = 0; i<sorted_threshold_list.size(); i++){
+    encoded_threshold_list.push_back(i);
+  }
+  
+  string feature_data;
+  string feature_file_name;
+  cout<<"Enter feature file name"<<endl;
+  cin>>feature_file_name;
+  
   ifstream infile("file1.txt");
   string line;
   vector<string> token_vec;
@@ -63,10 +75,13 @@ int main()
  
   size_t pos = 0;
   size_t token_pos = 0;
+  //get a line from the file
   for( std::string line; getline( infile, line ); )
   {
+    //parse the line by spaces first
     while ((pos = line.find(delimiter1)) != std::string::npos) 
     {
+      //if its a valid feauture add to token_vec
       string token = line.substr(0, pos);
       if((contains_digits_colon_period(token)) && !(all_digits(token)) )
       {
@@ -77,6 +92,7 @@ int main()
     }
     cout<<"printing token values"<<endl;
     size_t count = 0;
+    //strip tokens of their feature number and colon for encoding
     for(string token : token_vec){
         token_pos = token.find(delimiter2);
         token.erase(0, token_pos + delimiter2.length());
@@ -84,6 +100,7 @@ int main()
         token_vec[count]=token;
         count+=1;
     }
+    
     break;
   }
   return 0;
