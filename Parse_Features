@@ -16,23 +16,35 @@ int main()
 {
   ifstream infile("file1.txt");
   string line;
-  string tokens[10000];
+  string token_array[10000];
   string delimiter1 = " ";
+  string delimiter2 = ":";
  
  
   int counter = 0;
   size_t pos = 0;
+  size_t token_pos = 0;
   for( std::string line; getline( infile, line ); )
   {
-    while ((pos = line.find(delimiter1)) != std::string::npos) {
+    while ((pos = line.find(delimiter1)) != std::string::npos) 
+    {
       string token = line.substr(0, pos);
-      if((contains_digits_colon_period(token)) && !(all_digits(token)) ){
-        tokens[counter] = token;
+      if((contains_digits_colon_period(token)) && !(all_digits(token)) )
+      {
+        token_array[counter] = token;
         cout << token << endl;
         counter+=1;
       }
       line.erase(0, pos + delimiter1.length());
     }
+    cout<<"printing token vals"<<endl;
+    for(string token : token_array){
+        token_pos = token.find(delimiter2);
+        token.erase(0, token_pos + delimiter2.length());
+        cout<<token<<endl;
+    }
+    break;
+    
     
   }
   return 0;
