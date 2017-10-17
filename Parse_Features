@@ -73,6 +73,7 @@ int main() {
   ifstream infile("file1.txt");
   string line;
   vector<string> token_vec;
+  vector<string> all_tokens;
   string delimiter1 = " ";
   string delimiter2 = ":";
 
@@ -84,6 +85,7 @@ int main() {
     while ((pos = line.find(delimiter1)) != std::string::npos) {
       // if its a valid feauture add to token_vec
       string token = line.substr(0, pos);
+      all_tokens.push_back(token);
       if ((contains_digits_colon_period(token)) && !(all_digits(token))) {
         token_vec.push_back(token);
         cout << token << endl;
@@ -96,11 +98,9 @@ int main() {
     for (string token : token_vec) {
       token_pos = token.find(delimiter2);
       token.erase(0, token_pos + delimiter2.length());
-      //cout << token << endl;
       int i = 0;
-      while (stof(token) < encoded_threshold_list[i]) {
+      while (stof(token) > encoded_threshold_list[i]) {
         i += 1;
-        cout << "hello" << endl;
       }
       stringstream ss;
       ss << i;
@@ -108,14 +108,14 @@ int main() {
       token_vec[count].replace(token_pos + delimiter2.length(),  string::npos, str);
       count+=1;
     }
-
-    int c = 0;
-    for (string token : token_vec) {
-      cout << token_vec[c]<<endl;
-      c += 1;
+    
+    for (int c = 2; c<token_vec.size()+2 ; c++) {
+      all_tokens[c] = token_vec[c-2];
     }
+    for (string token : all_tokens)
+        cout<<token<<endl;
 
-    break;
+    //break
   }
   return 0;
 }
