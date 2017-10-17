@@ -11,7 +11,6 @@ int main()
   string line;
   string tokens[10000];
   string delimiter1 = " ";
-  string delimiter2 = "#";
   int i = 0;
   int counter = 0;
   size_t pos = 0;
@@ -21,7 +20,7 @@ int main()
     string token = line.substr(0, pos);
     tokens[counter] = token;
     cout << token << endl;
-    line.erase(0, pos + token.length());
+    line.erase(0, pos + delimiter1.length());
     counter+=1;
     }
     
