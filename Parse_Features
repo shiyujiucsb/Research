@@ -1,1 +1,35 @@
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
+using namespace std;
+
+int main()
+{
+  ifstream infile("file1.txt");
+  string line;
+  string tokens[10000];
+  string delimiter1 = " ";
+  string delimiter2 = "#";
+  int i = 0;
+  int counter = 0;
+  size_t pos = 0;
+  for( std::string line; getline( infile, line ); )
+  {
+    while ((pos = line.find(delimiter1)) != std::string::npos) {
+    string token = line.substr(0, pos);
+    tokens[counter] = token;
+    cout << token << endl;
+    line.erase(0, pos + token.length());
+    counter+=1;
+    }
+    
+    for(int i = 0; i<17;i++)
+    {
+    cout<<tokens[i]<<endl;
+    }
+    break;
+  }
+  return 0;
+}
