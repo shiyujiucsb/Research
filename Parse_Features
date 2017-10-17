@@ -1,14 +1,15 @@
-#include <string>
+#include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
+#include <string>
 #include <vector>
-#include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
 
 using namespace std;
 
-vector<double> parse_threshold(string content)
-{
+vector<double> parse_threshold(string content) {
   string delimiter1 = "<threshold>";
   string delimiter2 = "</threshold>";
   size_t pos = 0;
@@ -16,15 +17,15 @@ vector<double> parse_threshold(string content)
   size_t pos2 = 0;
   vector<double> threshold_list;
   string token;
- 
-  while ((pos = content.find(delimiter1)) != std::string::npos) 
-  {
-       pos1 = content.find(delimiter1);
-       pos2 = content.find(delimiter2);
-       size_t length = pos2-pos1;
-       token = content.substr(pos1 + delimiter1.length(), length - delimiter1.length());
-       content.erase(0, pos2 + delimiter2.length());
-       threshold_list.push_back(atof(token.c_str()));
+
+  while ((pos = content.find(delimiter1)) != std::string::npos) {
+    pos1 = content.find(delimiter1);
+    pos2 = content.find(delimiter2);
+    size_t length = pos2 - pos1;
+    token = content.substr(pos1 + delimiter1.length(),
+                           length - delimiter1.length());
+    content.erase(0, pos2 + delimiter2.length());
+    threshold_list.push_back(atof(token.c_str()));
   }
 
   sort(threshold_list.begin(), threshold_list.end());
@@ -32,75 +33,88 @@ vector<double> parse_threshold(string content)
 }
 
 bool contains_digits_colon_period(const std::string &str) {
-    return str.find_first_not_of("0123456789:.") == std::string::npos;
-  }
-bool all_digits(const std::string &str){
-    return str.find_first_not_of("0123456789") == std::string::npos;
+  return str.find_first_not_of("0123456789:.") == std::string::npos;
 }
 
-int main()
-{
+bool all_digits(const std::string &str) {
+  return str.find_first_not_of("0123456789") == std::string::npos;
+}
+
+int main() {
   string xml_data;
   string xml_file_name;
-  cout<<"Enter xml file name"<<endl;
-  cin>>xml_file_name;
+  // cout<<"Enter xml file name"<<endl;
+  // cin>>xml_file_name;
 
-  //ifstream xmlFile (xml_file_name);
-  ifstream xmlFile (file3.txt);
-  string  file_content( (std::istreambuf_iterator<char>(xmlFile) ),
-                   (std::istreambuf_iterator<char>()    ) );
+  // ifstream xmlFile (xml_file_name);
+  ifstream xmlFile("file3.txt");
+  string file_content((std::istreambuf_iterator<char>(xmlFile)),
+                      (std::istreambuf_iterator<char>()));
+                      
   vector<double> sorted_threshold_list = parse_threshold(file_content);
-  
-  cout<<"printing threshold_list"<<endl;
-  for (int i = 0; i<sorted_threshold_list.size(); i++) {
-    cout<<sorted_threshold_list[i]<<" ";
-  }cout<<endl;
-  
-  //encode thresholds 
+
+  cout << "printing threshold_list" << endl;
+  for (int i = 0; i < sorted_threshold_list.size(); i++) {
+    cout << sorted_threshold_list[i] << " ";
+  }
+  cout << endl;
+
+  // encode thresholds
   vector<int> encoded_threshold_list;
-  for(int i = 0; i<sorted_threshold_list.size(); i++){
+  for (int i = 0; i < sorted_threshold_list.size(); i++) {
     encoded_threshold_list.push_back(i);
   }
-  
+
   string feature_data;
   string feature_file_name;
-  cout<<"Enter feature file name"<<endl;
-  cin>>feature_file_name;
-  
+  // cout<<"Enter feature file name"<<endl;
+  // cin>>feature_file_name;
+
   ifstream infile("file1.txt");
   string line;
   vector<string> token_vec;
   string delimiter1 = " ";
   string delimiter2 = ":";
- 
+
   size_t pos = 0;
   size_t token_pos = 0;
-  //get a line from the file
-  for( std::string line; getline( infile, line ); )
-  {
-    //parse the line by spaces first
-    while ((pos = line.find(delimiter1)) != std::string::npos) 
-    {
-      //if its a valid feauture add to token_vec
+  // get a line from the file
+  for (std::string line; getline(infile, line);) {
+    // parse the line by spaces first
+    while ((pos = line.find(delimiter1)) != std::string::npos) {
+      // if its a valid feauture add to token_vec
       string token = line.substr(0, pos);
-      if((contains_digits_colon_period(token)) && !(all_digits(token)) )
-      {
+      if ((contains_digits_colon_period(token)) && !(all_digits(token))) {
         token_vec.push_back(token);
         cout << token << endl;
       }
       line.erase(0, pos + delimiter1.length());
     }
-    cout<<"printing token values"<<endl;
+    cout << "printing token values" << endl;
     size_t count = 0;
-    //strip tokens of their feature number and colon for encoding
-    for(string token : token_vec){
-        token_pos = token.find(delimiter2);
-        token.erase(0, token_pos + delimiter2.length());
-        cout<<token<<endl;
-        token_vec[count]=token;
-        count+=1;
+    // strip tokens of their feature number and colon for encoding
+    for (string token : token_vec) {
+      token_pos = token.find(delimiter2);
+      token.erase(0, token_pos + delimiter2.length());
+      //cout << token << endl;
+      int i = 0;
+      while (stof(token) < encoded_threshold_list[i]) {
+        i += 1;
+        cout << "hello" << endl;
+      }
+      stringstream ss;
+      ss << i;
+      string str = ss.str();
+      token_vec[count].replace(token_pos + delimiter2.length(),  string::npos, str);
+      count+=1;
     }
-    
+
+    int c = 0;
+    for (string token : token_vec) {
+      cout << token_vec[c]<<endl;
+      c += 1;
+    }
+
     break;
   }
   return 0;
