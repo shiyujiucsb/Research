@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -73,7 +74,6 @@ int main() {
   ifstream infile("file1.txt");
   string line;
   vector<string> token_vec;
-  vector<string> all_tokens;
   string delimiter1 = " ";
   string delimiter2 = ":";
 
@@ -81,6 +81,7 @@ int main() {
   size_t token_pos = 0;
   // get a line from the file
   for (std::string line; getline(infile, line);) {
+    vector<string> all_tokens;
     // parse the line by spaces first
     while ((pos = line.find(delimiter1)) != std::string::npos) {
       // if its a valid feauture add to token_vec
@@ -88,11 +89,10 @@ int main() {
       all_tokens.push_back(token);
       if ((contains_digits_colon_period(token)) && !(all_digits(token))) {
         token_vec.push_back(token);
-        cout << token << endl;
+        //cout << token << endl;
       }
       line.erase(0, pos + delimiter1.length());
     }
-    cout << "printing token values" << endl;
     size_t count = 0;
     // strip tokens of their feature number and colon for encoding
     for (string token : token_vec) {
@@ -112,10 +112,12 @@ int main() {
     for (int c = 2; c<token_vec.size()+2 ; c++) {
       all_tokens[c] = token_vec[c-2];
     }
+    cout << "printing encoded all_tokens" << endl;
     for (string token : all_tokens)
-        cout<<token<<endl;
-
-    //break
+         cout<<token<<endl;
+    all_tokens.clear();
+    token_vec.clear();
+    //break;
   }
   return 0;
 }
