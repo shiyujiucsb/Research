@@ -69,7 +69,6 @@ int main() {
   cin>>xml_file_name;
 
   ifstream xmlFile (xml_file_name);
-  ifstream xmlFile("file3.txt");
   string file_content((std::istreambuf_iterator<char>(xmlFile)),
                       (std::istreambuf_iterator<char>()));
   string original_file_content = file_content;
@@ -91,14 +90,14 @@ int main() {
 
   string feature_data;
   string feature_file_name;
-  // cout<<"Enter feature file name"<<endl;
-  // cin>>feature_file_name;
+  cout<<"Enter feature file name"<<endl;
+  cin>>feature_file_name;
 
-  ifstream infile("file1.txt");
+  ifstream infile(feature_file_name);
   ofstream encoded_features("encoded_features.txt");
   string line;
-  vector<string> token_vec;
-  vector<string> all_tokens;
+  vector<string> token_vec;//valid tokens only
+  vector<string> all_tokens;// contains all tokens from line
   string delimiter1 = " ";
   string delimiter2 = ":";
 
@@ -108,9 +107,10 @@ int main() {
   for (std::string line; getline(infile, line);) {
     // parse the line by spaces first
     while ((pos = line.find(delimiter1)) != std::string::npos) {
-      // if its a valid feauture add to token_vec
+      // if it's a valid feauture add to token_vec
       string token = line.substr(0, pos);
       all_tokens.push_back(token);
+      
       if ((contains_digits_colon_period(token)) && !(all_digits(token))) {
         token_vec.push_back(token);
         // cout << token << endl;
@@ -123,16 +123,12 @@ int main() {
       token_pos = token.find(delimiter2);
       token.erase(0, token_pos + delimiter2.length());
       int i = 0;
-      cout<<"sorted_threshold_list[i] = "<<sorted_threshold_list[i]<<endl;
       while (stod(token) > sorted_threshold_list[i+1]) {
-        cout<<"i is"<<i<<endl;
         i += 1;
       }
-      cout<<"replacing with encoded value "<<i<<endl;
       string str = to_string(i);
       token_vec[count].replace(token_pos + delimiter2.length(), string::npos,
                                str);
-      cout<<"done replacing with encoded value"<<endl;
     count+=1;
     }
 
@@ -147,5 +143,6 @@ int main() {
     all_tokens.clear();
     token_vec.clear();
   }
+  cout<<"Finished encoding features and thresholds"<<endl;
   return 0;
 }
