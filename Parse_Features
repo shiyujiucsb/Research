@@ -11,8 +11,8 @@
 using namespace std;
 
 string toString(double value) {
-  std::stringstream ss;
-  ss << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+  stringstream ss;
+  ss << setprecision(numeric_limits<double>::digits10 + 1);
   ss << value;
   string s = ss.str();
   if (s.length() == 1) {
@@ -22,12 +22,13 @@ string toString(double value) {
 }
 void encode_threshold_list(string original_content,
                           vector<double> sorted_thresholds) {
+  ofstream encoded_thresholds("encoded_thresholds.txt");
   for (int i = 0; i < sorted_thresholds.size(); i++) {
     string s = toString(sorted_thresholds[i]);
     size_t pos = original_content.find(s);
     original_content.replace(pos, s.length(), to_string(i));
   }
-  cout << "printing encoded content" << original_content;
+  encoded_thresholds << original_content;
 }
 
 vector<double> parse_threshold(string content, string original_content) {
@@ -64,10 +65,10 @@ bool all_digits(const std::string &str) {
 int main() {
   string xml_data;
   string xml_file_name;
-  //cout<<"Enter xml file name"<<endl;
-  //cin>>xml_file_name;
+  cout<<"Enter xml file name"<<endl;
+  cin>>xml_file_name;
 
-  // ifstream xmlFile (xml_file_name);
+  ifstream xmlFile (xml_file_name);
   ifstream xmlFile("file3.txt");
   string file_content((std::istreambuf_iterator<char>(xmlFile)),
                       (std::istreambuf_iterator<char>()));
@@ -116,20 +117,25 @@ int main() {
       }
       line.erase(0, pos + delimiter1.length());
     }
-    size_t count = 0;
     // strip tokens of their feature number and colon for encoding
+    size_t count = 0;
     for (string token : token_vec) {
       token_pos = token.find(delimiter2);
       token.erase(0, token_pos + delimiter2.length());
       int i = 0;
-      while (stof(token) > encoded_threshold_list[i]) {
+      cout<<"sorted_threshold_list[i] = "<<sorted_threshold_list[i]<<endl;
+      while (stod(token) > sorted_threshold_list[i+1]) {
+        cout<<"i is"<<i<<endl;
         i += 1;
       }
-      string str = toString(i);
+      cout<<"replacing with encoded value "<<i<<endl;
+      string str = to_string(i);
       token_vec[count].replace(token_pos + delimiter2.length(), string::npos,
                                str);
-      count += 1;
+      cout<<"done replacing with encoded value"<<endl;
+    count+=1;
     }
+
 
     for (int c = 2; c < token_vec.size() + 2; c++) {
       all_tokens[c] = token_vec[c - 2];
